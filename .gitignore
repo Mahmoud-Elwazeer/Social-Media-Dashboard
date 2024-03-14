@@ -1,0 +1,22 @@
+
+# dependencies
+frontside/node_modules
+frontside/.pnp
+frontside/.pnp.js
+
+# testing
+frontside/coverage
+
+# production
+frontside/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
