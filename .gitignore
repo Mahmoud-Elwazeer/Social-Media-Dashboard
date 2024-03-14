@@ -1,6 +1,8 @@
 
 # dependencies
 frontside/node_modules
+backside/node_modules
+
 frontside/.pnp
 frontside/.pnp.js
 
