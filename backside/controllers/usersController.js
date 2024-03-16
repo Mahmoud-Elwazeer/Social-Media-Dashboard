@@ -2,7 +2,7 @@ require('dotenv').config()
 const slugify = require('slugify');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
-const basicUtils = require('../utils/basic');
+const ApiError = require('../utils/apiError');
 
 class userControllers {
   // @desc create user
@@ -30,28 +30,19 @@ class userControllers {
 
   // @desc get specific user
   // @route GET /api/v1/users/:id
-  static getUserById = asyncHandler(async(req, res) => {
+  static getUserById = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    if (!basicUtils.isValidId(id)) {
-      res.status(404).json({ error: 'Not fount'});
-      return;
-    }
     const user = await User.findById(id);
     if (!user) {
-      res.status(404).json({ error: 'Not fount'});
-      return;
+      next(new ApiError('Not found', 404));
     }
     res.status(200).json({ data: user});
   })
 
   // @desc update specific user
   // @route PUT /api/v1/users/:id
-  static updateUserData = asyncHandler(async(req, res) => {
+  static updateUserData = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    if (!basicUtils.isValidId(id)) {
-      res.status(404).json({ error: 'Not fount'});
-      return;
-    }
     const { name, role, profileImage, bio, location, dateOfBirth } = req.body;
     const user = await User.findByIdAndUpdate(
       { _id: id},
@@ -59,24 +50,18 @@ class userControllers {
       { new: true}, // to return value after update
     )
     if (!user) {
-      res.status(404).json({ error: 'Not fount'});
-      return;
+      next(new ApiError('Not found', 404));
     }
     res.status(200).json({ data: user});
   })
 
   // @desc delete specific user
   // @route DELETE /api/v1/users/:id
-  static deleteUser = asyncHandler(async(req, res) => {
+  static deleteUser = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    if (!basicUtils.isValidId(id)) {
-      res.status(404).json({ error: 'Not fount'});
-      return;
-    }
     const user = await User.findByIdAndDelete(id);
     if (!user) {
-      res.status(404).json({ error: 'Not fount'});
-      return;
+      next(new ApiError('Not found', 404));
     }
     res.status(204).send();
   })

@@ -15,6 +15,7 @@ const user = new mongoose.Schema(
   email: {
     unique: true,
     type: String,
+    trim: true, // remove any space or tabs
     required: [true, 'Email required'],
     lowercase: true
   },

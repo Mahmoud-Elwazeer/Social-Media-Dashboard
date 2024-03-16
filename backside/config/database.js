@@ -13,7 +13,6 @@ const URL = `mongodb://${DB_HOST}:${DB_PORT}/${DB_DATABASE}`;
 const dbConnection = () => {
   mongoose.connect(URL)
   .then((conn) => console.log(`Connected to MongoDB: ${conn.connection.host}`))
-  .catch((err) => console.error(`Error connecting to MongoDB: ${err}`));
 }
 
 
