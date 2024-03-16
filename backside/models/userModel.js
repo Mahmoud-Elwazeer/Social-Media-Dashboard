@@ -3,18 +3,19 @@ const mongoose = require('mongoose');
 // Schema
 const user = new mongoose.Schema(
   {
-  firstName: {
+  name: {
     type: String,
-    required: [true, 'First Name required'],
+    required: [true, 'Name required'],
   },
-  lastName: {
+  // A and B => x.com/a-and-b using for frontend
+  slug: {
     type: String,
-    required: [true, 'Last Name required'],
+    lowercase: true,
   },
   email: {
+    unique: true,
     type: String,
     required: [true, 'Email required'],
-    unique: true,
     lowercase: true
   },
   password: {
@@ -27,16 +28,14 @@ const user = new mongoose.Schema(
     enum: ['user', 'admin'],
     default: 'user'
   },
-  // profileImage: String,
   active: {
     type: Boolean,
     default: true,
   },
-  // A and B => x.com/a-and-b using for frontend
-  slug: {
-    type: String,
-    lowercase: true,
-  }
+  profileImage: String,
+  bio: String,
+  location: String,
+  dateOfBirth: String,
   },
   // create two fields in db (createdat and updatedat) for time
   { timestamps: true }
