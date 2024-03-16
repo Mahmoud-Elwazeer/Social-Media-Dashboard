@@ -1,11 +1,22 @@
 import './App.css';
+import { HashRouter, Route, Router, Switch } from 'react-router-dom'
+import Register from './pages/Register'
+import Login from './pages/Login'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1> Hello World </h1>
-      </header>
+    <Register/>
+      {/* <Router>
+        <switch>
+          <Route exact path='/register'>
+            <Register/>
+          </Route>
+          <Route exact path='/login'>
+            <Login/>
+          </Route>
+        </switch>
+      </Router> */}
     </div>
   );
 }
