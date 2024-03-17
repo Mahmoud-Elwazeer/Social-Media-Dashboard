@@ -14,7 +14,7 @@ function isValidEmail(email) {
 
 // @desc 1- rules then validate
 const userValidator = {
-  createUserValidatot: [
+  createUserValidator: [
     check('name').notEmpty().withMessage('Invalid Name')
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
@@ -42,7 +42,6 @@ const userValidator = {
     validatorMiddleware,
     ],
     updateUserValidator: [
-    check('id').isMongoId().withMessage('Invalid user Id'),
     check('name')
     .custom((val, { req }) => {
       if (!val) return true;
@@ -64,4 +63,3 @@ const userValidator = {
 }
 
 module.exports = userValidator;
-

@@ -2,17 +2,18 @@ require('dotenv').config()
 const asyncHandler = require('express-async-handler');
 const ApiError = require('./apiError');
 const User = require('../models/userModel');
-const jwt = require('jsonwebtoken');
 
 class userUtils {
   // @desc create new user
     static createUser = asyncHandler(async(req) => {
     const { name, slug, email, password } = req.body;
     const { role='user', profileImage='', bio='', location='', dateOfBirth='' } = req.body;
+    const passwordChangedAt = Date.now()
 
     const user = await User.create({
       name, slug, email, password,
-      role, profileImage, bio, location, dateOfBirth
+      role, profileImage, bio, location, dateOfBirth,
+      passwordChangedAt
     });
 
     return (user);
@@ -20,11 +21,17 @@ class userUtils {
 
   // @desc get all users depend on query
   static getUsers = asyncHandler(async(query, req) => {
+    // pagination for page
     const { page = 1, limit = 3 } = req.query;
     const skip = (page - 1) * limit;  // when got to page 2 => skip (2 - 1) * limit
     const users = await User.find(query).skip(skip).limit(limit);
 
-    return (users);
+    const obj = {
+      users,
+      page,
+      limit
+    }
+    return (obj);
   });
 
   // @desc get user depend on ID
@@ -52,7 +59,7 @@ class userUtils {
   });
 
   // @desc delete user depend on ID
-  static deleteUser = asyncHandler(async(id, req, next) => {
+  static deleteUser = asyncHandler(async(id, next) => {
     const user = await User.findByIdAndDelete(id);
     if (!user) {
       next(new ApiError('Not found', 404));

@@ -8,30 +8,45 @@ const router = express.Router();
 router.route('/')
   .post(
     authController.auth_admin,
-    userValidator.createUserValidatot,
-    userControllers.createUser
+    userValidator.createUserValidator,
+    userControllers.createUserByAdmin
   )
   .get(
     authController.auth_admin,
-    userControllers.getUsers
+    userControllers.getUsersByAdmin
   );
 
-
-router.route('/:id')
+router.route('/me')
   .get(
     authController.auth_user,
-    userValidator.getUserByIdValidator,
     userControllers.getUserById
   )
   .put(
-    authController.auth_admin,
+    authController.auth_user,
     userValidator.updateUserValidator,
     userControllers.updateUserData
   )
   .delete(
-    authController.auth_admin,
-    userValidator.deleteUserValidator,
+    authController.auth_user,
     userControllers.deleteUser
   );
+
+router.route('/:id')
+  .get(
+    authController.auth_admin,
+    userValidator.getUserByIdValidator,
+    userControllers.getUserByIdByAdmin
+  )
+  .put(
+    authController.auth_admin,
+    userValidator.updateUserValidator,
+    userControllers.updateUserByAdmin
+  )
+  .delete(
+    authController.auth_admin,
+    userValidator.deleteUserValidator,
+    userControllers.deleteUserByAdmin
+  );
+
 
 module.exports = router;

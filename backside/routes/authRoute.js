@@ -10,11 +10,18 @@ router.route('/signup')
 router.route('/login')
   .post(authValidator.loginValidator, authController.login);
 
+router.route('/changePassword/me')
+  .put(
+    authController.auth_user,
+    authValidator.changePasswordValidator,
+    authController.changePassword
+  )
+
 router.route('/changePassword/:id')
   .put(
     authController.auth_admin,
-    authValidator.changePasswordValidator,
-    authController.changePassword
+    // authValidator.changePasswordValidator,
+    authController.changePasswordByAdmin
   )
 
 module.exports = router;

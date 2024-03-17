@@ -5,6 +5,7 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const authUtils = require('../utils/authUtils');
+const userUtils = require('../utils/userUtils');
 
 const createToken = (payload) => {
   return jwt.sign(
@@ -19,11 +20,7 @@ class authController {
   // @route POST /api/v1/auth/signup
   // @access Public
   static signup = asyncHandler(async(req, res) => {
-    const { name, slug, email, password } = req.body;
-    const user = await User.create({
-      name, slug, email, password
-    });
-
+    const user = await userUtils.createUser(req);
     const token = createToken({ userId: user._id, role: user.role });
 
     res.status(201).json({ data: user, token });
@@ -46,17 +43,18 @@ class authController {
   // @desc change password for user
   // @route PUT /api/v1/auth/changePassword/:id
   // @access Private
-  static changePassword = asyncHandler(async(req, res, next) => {
+  static changePasswordByAdmin = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    const { password } = req.body;
-    const user = await User.findByIdAndUpdate(
-      { _id: id},
-      { password: await bcrypt.hash(password, 12), passwordChangedAt: Date.now(), },
-      { new: true}, // to return value after update
-    )
-    if (!user) {
-      next(new ApiError('Not found', 404));
-    }
+    const user = await authUtils.changePassword(id, req, next);
+    res.status(200).json({ data: user});
+  })
+
+  // @desc change password for user
+  // @route PUT /api/v1/auth/changePassword/me
+  // @access Public
+  static changePassword = asyncHandler(async(req, res, next) => {
+    const id = req.user._id;
+    const user = await authUtils.changePassword(id, req, next);
     res.status(200).json({ data: user});
   })
 

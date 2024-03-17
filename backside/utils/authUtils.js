@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 const ApiError = require('./apiError');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 class authUtils {
   // @desc using to check authetication
@@ -42,7 +43,20 @@ class authUtils {
     }
 
     return obj;
-  })
+  });
+
+  static changePassword = asyncHandler(async(id, req, next) => {
+    const { password } = req.body;
+    const user = await User.findByIdAndUpdate(
+      { _id: id},
+      { password: await bcrypt.hash(password, 12), passwordChangedAt: Date.now(), },
+      { new: true}, // to return value after update
+    )
+    if (!user) {
+      next(new ApiError('Not found', 404));
+    }
+    return user;
+  });
 }
 
 module.exports = authUtils;

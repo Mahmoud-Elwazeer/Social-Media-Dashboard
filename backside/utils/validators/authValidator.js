@@ -37,17 +37,15 @@ const authValidator = {
   ],
 
   changePasswordValidator: [
-    check('id').isMongoId().withMessage('Invalid user Id'),
     check('currentPassword').notEmpty().withMessage('Enter Current password'),
     check('password').notEmpty().isLength({ min: 3 }).withMessage('Enter New password')
       .custom(async (password, { req }) => {
-        const user = await User.findById(req.params.id);
-        if (!user) {
+        if (!req.user) {
           throw new Error('There is no user for this id');
         }
         const isCorrect = await bcrypt.compare(
           req.body.currentPassword,
-          user.password
+          req.user.password
         );
         if (!isCorrect) {
           throw new Error('Incorrect Current Password');
