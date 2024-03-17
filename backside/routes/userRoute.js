@@ -15,4 +15,7 @@ router.route('/:id')
   .put(userValidator.updateUserValidator, userControllers.updateUserData)
   .delete(userValidator.deleteUserValidator, userControllers.deleteUser);
 
+router.route('/changePassword/:id')
+  .get(userValidator.changePasswordValidator, userControllers.changePassword)
+
 module.exports = router;

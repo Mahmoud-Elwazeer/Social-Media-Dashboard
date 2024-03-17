@@ -3,16 +3,17 @@ const slugify = require('slugify');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
+const bcrypt = require('bcryptjs');
 
 class userControllers {
   // @desc create user
   // @route POST /api/v1/users
-  static createUser = asyncHandler(async(req, res) => {
-    const { name, email, password } = req.body;
+  static createUser = asyncHandler(async(req, res, next) => {
+    const { name, slug, email, password } = req.body;
     const { role='user', profileImage='', bio='', location='', dateOfBirth='' } = req.body;
 
     const user = await User.create({
-      name, slug: slugify(name), email, password,
+      name, slug, email, password,
       role, profileImage, bio, location, dateOfBirth
     });
     res.status(201).json({ data: user});
@@ -43,10 +44,10 @@ class userControllers {
   // @route PUT /api/v1/users/:id
   static updateUserData = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    const { name, role, profileImage, bio, location, dateOfBirth } = req.body;
+    const { name, slug, email, role, profileImage, bio, location, dateOfBirth } = req.body;
     const user = await User.findByIdAndUpdate(
       { _id: id},
-      { name, role, bio, location, dateOfBirth},
+      { name, slug, email, role, bio, location, dateOfBirth},
       { new: true}, // to return value after update
     )
     if (!user) {
@@ -65,6 +66,24 @@ class userControllers {
     }
     res.status(204).send();
   })
+
+
+  // @desc change password for user
+  // @route PUT /api/v1/users/changePassword/:id
+  static changePassword = asyncHandler(async(req, res, next) => {
+    const { id } = req.params;
+    const { password } = req.body;
+    const user = await User.findByIdAndUpdate(
+      { _id: id},
+      { password: await bcrypt.hash(password, 12) },
+      { new: true}, // to return value after update
+    )
+    if (!user) {
+      next(new ApiError('Not found', 404));
+    }
+    res.status(200).json({ data: user});
+  })
+
 }
 
 module.exports = userControllers;

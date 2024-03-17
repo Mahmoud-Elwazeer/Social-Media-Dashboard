@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const dbConnection = require('./config/database')
 const handleRoutes = require('./routes/index');
+const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || 5000;
 
