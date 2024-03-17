@@ -1,21 +1,37 @@
 const express = require('express');
 const userControllers = require('../controllers/usersController');
-const { check, validationResult } = require('express-validator');
+const authController = require('../controllers/authController');
 const userValidator = require('../utils/validators/userValidator');
 
 const router = express.Router();
 
 router.route('/')
-  .post(userValidator.createUserValidatot, userControllers.createUser)
-  .get(userControllers.getUsers);
+  .post(
+    authController.auth_admin,
+    userValidator.createUserValidatot,
+    userControllers.createUser
+  )
+  .get(
+    authController.auth_admin,
+    userControllers.getUsers
+  );
 
 
 router.route('/:id')
-  .get( userValidator.getUserByIdValidator, userControllers.getUserById)
-  .put(userValidator.updateUserValidator, userControllers.updateUserData)
-  .delete(userValidator.deleteUserValidator, userControllers.deleteUser);
-
-router.route('/changePassword/:id')
-  .get(userValidator.changePasswordValidator, userControllers.changePassword)
+  .get(
+    authController.auth_user,
+    userValidator.getUserByIdValidator,
+    userControllers.getUserById
+  )
+  .put(
+    authController.auth_admin,
+    userValidator.updateUserValidator,
+    userControllers.updateUserData
+  )
+  .delete(
+    authController.auth_admin,
+    userValidator.deleteUserValidator,
+    userControllers.deleteUser
+  );
 
 module.exports = router;

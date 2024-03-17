@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 class userControllers {
   // @desc create user
   // @route POST /api/v1/users
+  // @access private
   static createUser = asyncHandler(async(req, res) => {
     const { name, slug, email, password } = req.body;
     const { role='user', profileImage='', bio='', location='', dateOfBirth='' } = req.body;
@@ -19,6 +20,7 @@ class userControllers {
 
   // @desc get list users
   // @route GET /api/v1/users
+  // @access private
   static getUsers = asyncHandler(async(req, res) => {
     // pagination for page
     const { page = 1, limit = 3 } = req.query;
@@ -29,6 +31,7 @@ class userControllers {
 
   // @desc get specific user
   // @route GET /api/v1/users/:id
+  // @access private
   static getUserById = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
     const user = await User.findById(id);
@@ -40,6 +43,7 @@ class userControllers {
 
   // @desc update specific user
   // @route PUT /api/v1/users/:id
+  // @access private
   static updateUserData = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
     const { name, slug, email, role, profileImage, bio, location, dateOfBirth } = req.body;
@@ -56,6 +60,7 @@ class userControllers {
 
   // @desc delete specific user
   // @route DELETE /api/v1/users/:id
+  // @access private
   static deleteUser = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
     const user = await User.findByIdAndDelete(id);
@@ -63,23 +68,6 @@ class userControllers {
       next(new ApiError('Not found', 404));
     }
     res.status(204).send();
-  })
-
-
-  // @desc change password for user
-  // @route PUT /api/v1/users/changePassword/:id
-  static changePassword = asyncHandler(async(req, res, next) => {
-    const { id } = req.params;
-    const { password } = req.body;
-    const user = await User.findByIdAndUpdate(
-      { _id: id},
-      { password: await bcrypt.hash(password, 12) },
-      { new: true}, // to return value after update
-    )
-    if (!user) {
-      next(new ApiError('Not found', 404));
-    }
-    res.status(200).json({ data: user});
   })
 
 }

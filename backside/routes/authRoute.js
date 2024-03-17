@@ -1,6 +1,5 @@
 const express = require('express');
 const authController = require('../controllers/authController');
-const { check, validationResult } = require('express-validator');
 const authValidator = require('../utils/validators/authValidator');
 
 const router = express.Router();
@@ -8,7 +7,14 @@ const router = express.Router();
 router.route('/signup')
   .post(authValidator.signupValidator, authController.signup);
 
-router.route('/signin')
-  .post(authValidator.signinValidator, authController.signin);
+router.route('/login')
+  .post(authValidator.loginValidator, authController.login);
+
+router.route('/changePassword/:id')
+  .put(
+    authController.auth_admin,
+    authValidator.changePasswordValidator,
+    authController.changePassword
+  )
 
 module.exports = router;

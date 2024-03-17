@@ -30,9 +30,34 @@ const authValidator = {
     validatorMiddleware,
   ],
 
-  signinValidator: [
+  loginValidator: [
     check('email').trim().isEmail().withMessage('Invalid Email'),
     check('password').notEmpty().isLength({ min: 3 }).withMessage('Invalid Email or  password'),
+    validatorMiddleware,
+  ],
+
+  changePasswordValidator: [
+    check('id').isMongoId().withMessage('Invalid user Id'),
+    check('currentPassword').notEmpty().withMessage('Enter Current password'),
+    check('password').notEmpty().isLength({ min: 3 }).withMessage('Enter New password')
+      .custom(async (password, { req }) => {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+          throw new Error('There is no user for this id');
+        }
+        const isCorrect = await bcrypt.compare(
+          req.body.currentPassword,
+          user.password
+        );
+        if (!isCorrect) {
+          throw new Error('Incorrect Current Password');
+        }
+        if (password !== req.body.confirmPassword) {
+          throw new Error('Password Confirmation incorrect');
+        }
+        return true;
+      }),
+    check('confirmPassword').notEmpty().withMessage('Invalid Password'),
     validatorMiddleware,
   ],
 }
