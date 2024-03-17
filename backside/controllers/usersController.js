@@ -1,5 +1,3 @@
-require('dotenv').config()
-const slugify = require('slugify');
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
@@ -8,7 +6,7 @@ const bcrypt = require('bcryptjs');
 class userControllers {
   // @desc create user
   // @route POST /api/v1/users
-  static createUser = asyncHandler(async(req, res, next) => {
+  static createUser = asyncHandler(async(req, res) => {
     const { name, slug, email, password } = req.body;
     const { role='user', profileImage='', bio='', location='', dateOfBirth='' } = req.body;
 
