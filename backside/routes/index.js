@@ -1,5 +1,6 @@
 const userRoute = require('./userRoute');
-const authRoute = require('./authRoute')
+const authRoute = require('./authRoute');
+const postRoute = require('./postRoute');
 const ApiError = require('../utils/apiError');
 const globalError = require('../middlewares/errorMiddleware');
 
@@ -7,6 +8,7 @@ const handleRoutes = (app) => {
 	app.get('/', (_, res) => res.status(200).send('Hello World'));
   app.use('/api/v1/users', userRoute);
   app.use('/api/v1/auth', authRoute);
+  app.use('/api/v1/posts', postRoute);
 
 
   // Handle Error Not fount route from above
