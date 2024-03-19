@@ -46,6 +46,15 @@ class docUtils {
     return (doc);
   };
 
+  // @desc filter document depend on model and ID
+  static filterDoc = async (model, query, next) => {
+    const doc = await model.aggregate(query).exec();
+    if (!doc) {
+      next(new ApiError('Not found', 404));
+    }
+    return (doc);
+  };
+
   // @desc delete document depend on model and ID
   static deleteDoc = async (model, id, next) => {
     const doc = await model.findByIdAndDelete(id);

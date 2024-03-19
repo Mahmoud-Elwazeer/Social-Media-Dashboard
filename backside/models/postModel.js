@@ -16,8 +16,10 @@ const post = new mongoose.Schema ({
     ref: 'user',
   }],
   comments: [{
-    type: mongoose.Schema.ObjectId,
-    ref: 'user',
+    userId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'user'
+    },
     content: {
       type: String,
       required: [true, 'Content is required'],

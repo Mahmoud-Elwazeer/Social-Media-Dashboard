@@ -41,7 +41,7 @@ const userValidator = {
     check('id').isMongoId().withMessage('Invalid user Id'),
     validatorMiddleware,
     ],
-    updateUserValidator: [
+  updateUserValidator: [
     check('name')
     .custom((val, { req }) => {
       if (!val) return true;
