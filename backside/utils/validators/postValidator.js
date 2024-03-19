@@ -117,6 +117,40 @@ const postValidator = {
       }),
     validatorMiddleware,
   ],
+
+  likeCommentValidator: [
+    check('id').isMongoId().withMessage('Invalid post Id'),
+    check('commentId').isMongoId().withMessage('Invalid comment Id')
+      .custom(async (val, { req }) => {
+        const { id, commentId } = req.params;
+        const post = await Post.findById(id);
+        if (!post) throw new Error('Invalid post id');
+        const comment = post.comments.id(commentId);
+        if (!comment) throw new Error('Invalid comment id');
+        if (comment.likes.includes(req.user._id)) {
+          throw new Error('You have already liked this comment');
+        }
+        return true;
+      }),
+    validatorMiddleware,
+  ],
+
+  unlikeCommentValidator: [
+    check('id').isMongoId().withMessage('Invalid post Id'),
+    check('commentId').isMongoId().withMessage('Invalid comment Id')
+      .custom(async (val, { req }) => {
+        const { id, commentId } = req.params;
+        const post = await Post.findById(id);
+        if (!post) throw new Error('Invalid post id');
+        const comment = post.comments.id(commentId);
+        if (!comment) throw new Error('Invalid comment id');
+        if (!(comment.likes.includes(req.user._id))) {
+          throw new Error('You have unliked this post');
+        }
+        return true;
+      }),
+    validatorMiddleware,
+  ],
 }
 
 module.exports = postValidator;

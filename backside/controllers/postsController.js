@@ -1,11 +1,8 @@
 const Post = require('../models/postModel');
 const docUtils = require('../utils/docUtils');
 const asyncHandler = require('express-async-handler');
-const User = require('../models/userModel');
-const mongoose = require('mongoose');
-// const ApiError = require('../utils/apiError');
-
-const ObjectId = mongoose.Types.ObjectId;
+const ApiError = require('../utils/apiError');
+const postUtils = require('../utils/postUtils');
 
 class postsController {
   // @desc create post
@@ -115,14 +112,8 @@ class postsController {
   // @route GET /api/v1/posts/:id/comments/:commentId
   // @access public
   static getComment = asyncHandler(async(req, res, next) => {
-    const { id, commentId } = req.params;
-    const post = await docUtils.getlDocById(Post, id, next);
-    if (!post) return;
-    const comment = post.comments.id(commentId);
-    if (!comment) {
-      next(new ApiError('Not found', 404));
-      return;
-    }
+    const { comment } = await postUtils.getComment(req, next);
+    if (!comment) return;
     res.status(200).json({ data: comment });
   });
 
@@ -130,15 +121,9 @@ class postsController {
   // @route PUT /api/v1/posts/:id/comments/:commentId
   // @access public
   static updateComment = asyncHandler(async(req, res, next) => {
-    const { id, commentId } = req.params;
     const { content } = req.body;
-    const post = await docUtils.getlDocById(Post, id, next);
-    if (!post) return;
-    const comment = post.comments.id(commentId);
-    if (!comment) {
-      next(new ApiError('Not found', 404));
-      return;
-    }
+    const { post, comment } = await postUtils.getComment(req, next);
+    if (!comment) return;
     // Update the content of the comment
     comment.content = content;
     await post.save();
@@ -154,6 +139,30 @@ class postsController {
     const post = await docUtils.updateDoc(Post, id, query, next);
     if (!post) return;
     res.status(204).send();
+  });
+
+  // @desc Like a comment.
+  // @route POST /api/v1/posts/:id/comments/:commentId/like
+  // @access public
+  static likeComment = asyncHandler(async(req, res, next) => {
+    const userId = req.user._id;
+    const { post, comment } = await postUtils.getComment(req, next);
+    if (!comment) return;
+    comment.likes.push(userId);
+    await post.save();
+    res.status(201).json({ data: post});
+  });
+
+  // @desc unlike a comment.
+  // @route DELETE /api/v1/posts/:id/comments/:commentId/like
+  // @access public
+  static unlikeComment = asyncHandler(async(req, res, next) => {
+    const userId = req.user._id;
+    const { post, comment } = await postUtils.getComment(req, next);
+    if (!comment) return;
+    comment.likes.pull(userId);
+    await post.save();
+    res.status(201).json({ data: post});
   });
 }
 

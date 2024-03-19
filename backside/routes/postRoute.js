@@ -80,4 +80,17 @@ router.route('/:id/comments/:commentId')
     postsController.deleteComment,
   )
 
+
+router.route('/:id/comments/:commentId/like')
+  .post(
+    authController.auth_user,
+    postValidator.likeCommentValidator,
+    postsController.likeComment,
+  )
+  .delete(
+    authController.auth_user,
+    postValidator.unlikeCommentValidator,
+    postsController.unlikeComment,
+  )
+
 module.exports = router;
