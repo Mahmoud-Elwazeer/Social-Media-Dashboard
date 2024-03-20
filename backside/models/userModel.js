@@ -35,6 +35,10 @@ const user = new mongoose.Schema(
     type: Boolean,
     default: true,
   },
+  friends: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'users'
+  }],
   profileImage: String,
   bio: String,
   location: String,

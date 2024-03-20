@@ -23,6 +23,16 @@ class docUtils {
     return (obj);
   };
 
+  // @desc get document depend on model and query
+  static getDoc = async (model, query, next) => {
+    const doc = await model.findOne(query);
+    if (!doc) {
+      next(new ApiError('Not found', 404));
+    }
+
+    return (doc);
+  };
+
   // @desc get document depend on model and ID
   static getlDocById = async (model, id, next) => {
     const doc = await model.findById(id);
