@@ -26,4 +26,20 @@ router.route('/reject-request/:friendshipId')
     friendsController.rejectRequest,
   )
 
+router.route('/cancel-request/:friendshipId')
+  .delete(
+    authController.auth_user,
+    friendValidator.statusRequestValidator,
+    friendsController.cancelRequest,
+  )
+
+router.route('/unfriend/:friendshipId')
+  .delete(
+    authController.auth_user,
+    friendValidator.statusRequestValidator,
+    friendsController.unfriend,
+  )
+
+
+
 module.exports = router;

@@ -21,6 +21,36 @@ class freindUtils {
     if (!friend) return;
     return friend;
   })
+
+  static deletefriend = asyncHandler(async(req, next) => {
+    const { friendshipId } = req.params;
+    const friendship = await docUtils.getlDocById(Friend, friendshipId, next);
+    if (!friendship) return;
+    if (friendship.status === "rejected") {
+      next(new ApiError('Not Found', 404));
+      return;
+    }
+    if ((friendship.user1.toString() !== req.user._id.toString() && req.user.role !== 'admin') &&
+      (friendship.user2.toString() !== req.user._id.toString() && req.user.role !== 'admin')) { 
+      next(new ApiError('You are not allowed to access this route', 401));
+      return;
+    }
+    const friend = await docUtils.deleteDoc(Friend, friendshipId, next);
+    if (!friend) return;
+    return friend;
+  })
+
+  static getFriend = asyncHandler(async(req, next) => {
+    const { friendshipId } = req.params;
+    const friendship = await docUtils.getlDocById(Friend, friendshipId, next);
+    if (!friendship) return;
+    if ((friendship.user1.toString() !== req.user._id.toString() && req.user.role !== 'admin') &&
+      (friendship.user2.toString() !== req.user._id.toString() && req.user.role !== 'admin')) { 
+      next(new ApiError('You are not allowed to access this route', 401));
+      return;
+    }
+    return friendship;
+  })
 }
 
 module.exports = freindUtils;
