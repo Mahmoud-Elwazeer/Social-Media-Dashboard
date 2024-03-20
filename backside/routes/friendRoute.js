@@ -5,6 +5,18 @@ const friendValidator = require('../utils/validators/friendValidator');
 
 const router = express.Router();
 
+router.route('/')
+  .get(
+    authController.auth_user,
+    friendsController.getFriends,
+  )
+
+router.route('/pending')
+  .get(
+    authController.auth_user,
+    friendsController.getPending,
+  )
+
 router.route('/send-request/:userId')
   .post(
     authController.auth_user,

@@ -7,6 +7,29 @@ const freindUtils = require('../utils/freindUtils');
 const User = require('../models/userModel');
 
 class friendsController {
+  // @desc get all friends
+  // @route GET /api/v1/friendships
+  // @access public
+  static getFriends = asyncHandler(async(req, res, next) => {
+    const userIds = req.user.friends;
+    const friends = await User.find({ _id: { $in: userIds } }, 'name email');
+    res.status(200).json({ data: friends });
+  })
+
+  // @desc get all friends
+  // @route GET /api/v1/friendships/pending
+  // @access public
+  static getPending = asyncHandler(async(req, res, next) => {
+    const userId = req.user._id;
+    const friends = await Friend.find({
+      $or: [{ user1: userId }, { user2: userId }]
+    }).populate('user1', 'name email')
+      .populate('user2', 'name email');
+
+    res.status(200).json({ data: friends });
+  })
+
+
   // @desc send request
   // @route POST /api/v1/friendships/send-request/:userId
   // @access public

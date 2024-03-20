@@ -33,7 +33,7 @@ router.route('/me')
 
 router.route('/:id')
   .get(
-    authController.auth_admin,
+    authController.auth_user,
     userValidator.getUserByIdValidator,
     userControllers.getUserByIdByAdmin
   )
