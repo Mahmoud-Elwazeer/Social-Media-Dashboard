@@ -12,7 +12,7 @@ router.route('/')
     userControllers.createUserByAdmin
   )
   .get(
-    authController.auth_admin,
+    authController.auth_user,
     userControllers.getUsersByAdmin
   );
 
