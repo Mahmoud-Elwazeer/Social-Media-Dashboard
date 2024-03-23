@@ -33,5 +33,36 @@ router.route('/:id')
     groupValidator.updateGroupValidator,
     groupControllers.updateGroup,
   )
+  .delete(
+    authController.auth_user,
+    groupValidator.updateGroupValidator,
+    groupControllers.deleteGroup,
+  )
+
+router.route('/:id/members')
+  .get(
+    authController.auth_user,
+    groupValidator.groupValidator,
+    groupControllers.getAllmembers,
+  )
+
+router.route('/:id/members/:userId')
+  .post(
+    authController.auth_user,
+    groupValidator.addUserToGroupValidator,
+    groupControllers.addUserToGroup,
+  )
+  .delete(
+    authController.auth_user,
+    groupValidator.deleteUserFromGroupValidator,
+    groupControllers.deleteUserFromGroup,
+  )
+
+router.route('/:id/posts')
+  .get(
+    authController.auth_user,
+    groupValidator.groupValidator,
+    groupControllers.getAllPosts,
+  )
 
 module.exports = router

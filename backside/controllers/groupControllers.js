@@ -19,7 +19,7 @@ class groupControllers {
   });
 
   // @desc get all groups
-  // @route POST /api/v1/groups
+  // @route GET /api/v1/groups
   // @access public
   static getAllGroups = asyncHandler(async(req, res) => {
     const groups = await docUtils.getDocs(Group, {}, req);
@@ -56,7 +56,58 @@ class groupControllers {
     res.status(200).json({ data: group});
   });
 
+  // @desc delete specific post
+  // @route DELETE /api/v1/groups/:id
+  // @access public
+  static deleteGroup = asyncHandler(async(req, res, next) => {
+    const { id } = req.params;
+    const group = await docUtils.deleteDoc(Group, id, next);
+    if (!group) return;
+    res.status(204).send();
+  });
 
+  // @desc get all members for specific group
+  // @route GET /api/v1/groups/:id/members
+  // @access public
+  static getAllmembers = asyncHandler(async(req, res, next) => {
+    const { id } = req.params;
+    const group = await docUtils.getlDocById(Group, id, next);
+    if (!group) return;
+    res.status(200).json({ data: group.members });
+  });
+
+  // @desc add a user for group.
+  // @route POST /api/v1/groups/:id/members/:userId
+  // @access public
+  static addUserToGroup = asyncHandler(async(req, res, next) => {
+    const { id, userId } = req.params;
+    const query = { $push: { 'members': { userId } } };
+    const group = await docUtils.updateDoc(Group, id, query, next);
+    if (!group) return;
+    res.status(201).json({ data: group.members });
+  });
+
+  // @desc delete a user from group.
+  // @route DELETE /api/v1/groups/:id/members/:userId
+  // @access public
+  static deleteUserFromGroup = asyncHandler(async(req, res, next) => {
+    const { id, userId } = req.params;
+    const query = { $pull: { 'members': { userId } } };
+    const group = await docUtils.updateDoc(Group, id, query, next);
+    if (!group) return;
+    res.status(204).send();
+  });
+
+
+  // @desc get all members for specific group
+  // @route GET /api/v1/groups/:id/posts
+  // @access public
+  static getAllPosts = asyncHandler(async(req, res, next) => {
+    const { id } = req.params;
+    const group = await docUtils.getlDocById(Group, id, next);
+    if (!group) return;
+    res.status(200).json({ data: group.posts });
+  });
 }
 
 module.exports = groupControllers;

@@ -3,6 +3,9 @@ const validatorMiddleware = require('../../middlewares/validatorMiddleware');
 const slugify = require('slugify');
 const Group = require('../../models/groupModel');
 const docUtils = require('../docUtils');
+const mongoose = require('mongoose');
+
+const ObjectId = mongoose.Types.ObjectId;
 
 const groupValidator = {
   createGroupValidator: [
@@ -29,13 +32,56 @@ const groupValidator = {
         const group = await Group.findById(id);
         if (!group) throw new Error('Invalid group id');
         const user = group.members.find(member => member.userId.toString() === req.user._id.toString());
-        if (!user && req.user.role !== 'admin') throw new Error('Not found');
+        if (!user && req.user.role !== 'admin') throw new Error('unauthorized');
         if (req.user.role !== 'admin') {
           if (user.role !== 'admin')
             throw new Error('unauthorized');
         }
       return true;
     }),
+    validatorMiddleware,
+  ],
+  groupValidator: [
+    check('id').isMongoId().withMessage('Invalid Group Id'),
+    validatorMiddleware,
+  ],
+  addUserToGroupValidator: [
+    check('userId').isMongoId().withMessage('Invalid user Id'),
+    check('id').isMongoId().withMessage('Invalid Group Id')
+      .custom(async (val, { req }) => {
+      const { id, userId } = req.params;
+      const group = await Group.findById(id);
+      if (!group) throw new Error('Invalid group id');
+      let user = group.members.find(member => member.userId.toString() === userId.toString());
+      if (user) throw new Error('You have already in group')
+      user = group.members.find(member => member.userId.toString() === req.user._id.toString());
+      if (!user && req.user.role !== 'admin') throw new Error('unauthorized');
+      if (req.user.role !== 'admin') {
+        if (user.role !== 'admin')
+          throw new Error('unauthorized');
+      }
+    return true;
+      }),
+    validatorMiddleware,
+  ],
+
+  deleteUserFromGroupValidator: [
+    check('userId').isMongoId().withMessage('Invalid user Id'),
+    check('id').isMongoId().withMessage('Invalid Group Id')
+      .custom(async (val, { req }) => {
+      const { id, userId } = req.params;
+      const group = await Group.findById(id);
+      if (!group) throw new Error('Invalid group id');
+      let user = group.members.find(member => member.userId.toString() === userId.toString());
+      if (!user) throw new Error('You aren\'t in this group')
+      user = group.members.find(member => member.userId.toString() === req.user._id.toString());
+      if (!user && req.user.role !== 'admin') throw new Error('unauthorized');
+      if (req.user.role !== 'admin') {
+        if (user.role !== 'admin')
+          throw new Error('unauthorized');
+      }
+    return true;
+      }),
     validatorMiddleware,
   ],
 }
