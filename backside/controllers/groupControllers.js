@@ -35,6 +35,28 @@ class groupControllers {
     const { docs, page } = await docUtils.getDocs(Group, { 'members.userId': req.user._id }, req);
     res.status(200).json({ results: docs.length, page, data: docs});
   });
+
+  // @desc get specific group
+  // @route GET /api/v1/groups/:id
+  // @access public
+  static getGroupById = asyncHandler(async(req, res, next) => {
+    const { id } = req.params;
+    const group = await docUtils.getlDocById(Group, id, next);
+    if (!group) return;
+    res.status(200).json({ data: group});
+  });
+
+  // @desc update specific Group
+  // @route PUT /api/v1/groups/:id
+  // @access public
+  static updateGroup = asyncHandler(async(req, res, next) => {
+    const { id } = req.params;
+    const group = await docUtils.updateDoc(Group, id, req.body, next);
+    if (!group) return;
+    res.status(200).json({ data: group});
+  });
+
+
 }
 
 module.exports = groupControllers;

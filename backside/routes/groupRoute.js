@@ -22,4 +22,16 @@ router.route('/me')
     groupControllers.getGroups,
   )
 
+router.route('/:id')
+  .get(
+    authController.auth_user,
+    groupValidator.getGroupByIdValidator,
+    groupControllers.getGroupById,
+  )
+  .put(
+    authController.auth_user,
+    groupValidator.updateGroupValidator,
+    groupControllers.updateGroup,
+  )
+
 module.exports = router
