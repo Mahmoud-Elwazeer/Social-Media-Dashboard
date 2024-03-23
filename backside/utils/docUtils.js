@@ -43,6 +43,16 @@ class docUtils {
     return (doc);
   };
 
+  // @desc get document depend on model and ID and populate field
+  static getlDocByIdPop = async (model, id, field,  next) => {
+    const doc = await model.findById(id).populate(field);
+    if (!doc) {
+      next(new ApiError('Not found', 404));
+    }
+
+    return (doc);
+  };
+
   // @desc update document depend on model and ID
   static updateDoc = async (model, id, query, next) => {
     const doc = await model.findByIdAndUpdate(

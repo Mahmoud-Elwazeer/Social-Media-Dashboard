@@ -2,6 +2,7 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const groupControllers = require('../controllers/groupControllers'); 
 const groupValidator = require('../utils/validators/groupValidator');
+const postValidator = require('../utils/validators/postValidator');
 
 const router = express.Router();
 
@@ -63,6 +64,19 @@ router.route('/:id/posts')
     authController.auth_user,
     groupValidator.groupValidator,
     groupControllers.getAllPosts,
+  )
+  .post(
+    authController.auth_user,
+    groupValidator.groupValidator,
+    postValidator.createPostValidator,
+    groupControllers.addPostToGroup,
+  )
+
+router.route('/:id/posts/:postId')
+  .get(
+    authController.auth_user,
+    groupValidator.groupValidator,
+    groupControllers.getPostFromGroup,
   )
 
 module.exports = router
