@@ -1,6 +1,7 @@
 const userRoute = require('./userRoute');
 const authRoute = require('./authRoute');
 const postRoute = require('./postRoute');
+const groupRoute = require('./groupRoute');
 const friendshipRoute = require('./friendRoute');
 const ApiError = require('../utils/apiError');
 const globalError = require('../middlewares/errorMiddleware');
@@ -11,6 +12,7 @@ const handleRoutes = (app) => {
   app.use('/api/v1/auth', authRoute);
   app.use('/api/v1/posts', postRoute);
   app.use('/api/v1/friendships', friendshipRoute);
+  app.use('/api/v1/groups', groupRoute);
 
 
   // Handle Error Not fount route from above

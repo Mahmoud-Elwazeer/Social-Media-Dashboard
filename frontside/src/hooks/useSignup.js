@@ -7,7 +7,7 @@ function useSignup () {
 	async function signup (formData) {
 		try {
 			let response = await axios.post(
-				api + "/signup",
+				api + "/auth/signup",
 				formData
 			)
 			response = response.data

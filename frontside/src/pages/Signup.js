@@ -49,11 +49,11 @@ function SignupPage () {
 									<i className="mtrl-select"></i>
 								</div>
 
-								<div className="form-group">
+								{/* <div className="form-group">
 									<input type="text" required name="username" />
 									<label className="control-label">User Name</label>
 									<i className="mtrl-select"></i>
-								</div>
+								</div> */}
 
 								<div className="form-group">
 									<input type="email" required name="email" />
@@ -64,6 +64,11 @@ function SignupPage () {
 								<div className="form-group">
 									<input type="password" required name="password" />
 									<label className="control-label">Password</label>
+									<i className="mtrl-select"></i>
+								</div>
+								<div className="form-group">
+									<input type="password" required name="password" />
+									<label className="control-label">Confirm Password</label>
 									<i className="mtrl-select"></i>
 								</div>
 
