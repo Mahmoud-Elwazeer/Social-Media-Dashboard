@@ -40,4 +40,75 @@ router.route('/:id')
     pageControllers.deletePage,
   )
 
+router.route('/:id/admins')
+  .get(
+    authController.auth_user,
+    pageValidator.pageValidator,
+    pageControllers.getAllAdmins,
+  )
+
+router.route('/:id/admins/:adminId')
+  .post(
+    authController.auth_user,
+    pageValidator.addAdminToPageValidator,
+    pageControllers.addAdminToPage,
+  )
+  .delete(
+    authController.auth_user,
+    pageValidator.deleteAdminFromPageValidator,
+    pageControllers.deleteAdminFromPage
+  )
+
+router.route('/:id/followers')
+  .get(
+    authController.auth_user,
+    pageValidator.pageValidator,
+    pageControllers.getAllFollowers,
+  )
+  .post(
+    authController.auth_user,
+    pageValidator.pageValidator,
+    pageControllers.addFollowerToPage,
+  )
+
+router.route('/:id/followers/:followerId')
+  .delete(
+    authController.auth_user,
+    pageValidator.deleteFollowerFromPageValidator,
+    pageControllers.deleteFollowerFromPage,
+  )
+
+
+router.route('/:id/posts')
+  .get(
+    authController.auth_user,
+    pageValidator.pageValidator,
+    pageControllers.getAllPosts,
+  )
+  .post(
+    authController.auth_user,
+    pageValidator.pageValidator,
+    pageValidator.checkAuthForPage,
+    postValidator.createPostValidator,
+    pageControllers.addPostToPage,
+  )
+
+router.route('/:id/posts/:postId')
+  .get(
+    authController.auth_user,
+    pageValidator.pageValidator,
+    pageControllers.getPostFromPage,
+  )
+  .put(
+    authController.auth_user,
+    pageValidator.checkAuthForPage,
+    pageControllers.updatePostFromPage,
+  )
+  .delete(
+    authController.auth_user,
+    pageValidator.checkAuthForPage,
+    pageControllers.deletePostFromPage,
+  )
+
+
 module.exports = router;
