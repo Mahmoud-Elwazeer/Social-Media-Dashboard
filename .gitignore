@@ -1,26 +1,2 @@
-
-# dependencies
-frontside/node_modules
 backside/node_modules
-
-frontside/.pnp
-frontside/.pnp.js
-
-# testing
-frontside/coverage
-
-# production
-frontside/build
-
-# misc
-frontside/.DS_Store
-frontside/.env.local
-frontside/.env.development.local
-frontside/.env.test.local
-frontside/.env.production.local
-
 backside/.env
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
