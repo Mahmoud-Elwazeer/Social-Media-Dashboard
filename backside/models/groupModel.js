@@ -20,6 +20,10 @@ const group = new mongoose.Schema({
       default: 'user'
     },
   }],
+  requests: [{
+    type:  mongoose.Schema.ObjectId,
+    ref: 'users'
+  }],
   posts: [{
     type: mongoose.Schema.ObjectId,
     ref: 'posts',

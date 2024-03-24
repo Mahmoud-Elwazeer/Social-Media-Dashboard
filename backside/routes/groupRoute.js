@@ -91,4 +91,29 @@ router.route('/:id/posts/:postId')
     groupControllers.deletePostFromGroup,
   )
 
+router.route('/:id/requests')
+  .get(
+    authController.auth_user,
+    groupValidator.checkAuthForGroup,
+    groupValidator.groupValidator,
+    groupControllers.getAllRequests,
+  )
+
+router.route('/:id/requests/:userId')
+  .post(
+    authController.auth_user,
+    groupValidator.addUserToGroupValidator,
+    groupControllers.sendRequestGroup,
+  )
+  .put(
+    authController.auth_user,
+    groupValidator.addUserToGroupValidator,
+    groupControllers.acceptRequestGroup,
+  )
+  .delete(
+    authController.auth_user,
+    groupValidator.groupValidator,
+    groupControllers.refuseRequestGroup,
+  )
+
 module.exports = router

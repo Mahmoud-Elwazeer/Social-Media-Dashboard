@@ -160,6 +160,49 @@ class groupControllers {
     if (!post) return;
     res.status(204).send();
   });
+
+  // @desc get all requests for specific group
+  // @route GET /api/v1/groups/:id/requests
+  // @access public
+  static getAllRequests = asyncHandler(async(req, res, next) => {
+    const { id } = req.params;
+    const group = await docUtils.getlDocById(Group, id, next);
+    if (!group) return;
+    res.status(200).json({ data: group.requests });
+  });
+
+  // @desc  Send a join request to a group.
+  // @route POST /api/v1/groups/:id/requests/:userId
+  // @access public
+  static sendRequestGroup = asyncHandler(async(req, res, next) => {
+    const { id, userId } = req.params;
+    const query = { $push: { 'requests': userId } };
+    const group = await docUtils.updateDoc(Group, id, query, next);
+    if (!group) return;
+    res.status(201).json({ data: group.requests });
+  })
+
+  // @desc  accept request to a group.
+  // @route PUT /api/v1/groups/:id/requests/:userId
+  // @access public
+  static acceptRequestGroup = asyncHandler(async(req, res, next) => {
+    const { id, userId } = req.params;
+    const query = { $pull: { 'requests': userId }, $push: { 'members': { userId } }  };
+    const group = await docUtils.updateDoc(Group, id, query, next);
+    if (!group) return;
+    res.status(201).json({ data: group.members });
+  })
+
+  // @desc  refuse request to a group.
+  // @route DELETE /api/v1/groups/:id/requests/:userId
+  // @access public
+  static refuseRequestGroup = asyncHandler(async(req, res, next) => {
+    const { id, userId } = req.params;
+    const query = { $pull: { 'requests': userId } };
+    const group = await docUtils.updateDoc(Group, id, query, next);
+    if (!group) return;
+    res.status(204).send();
+  })
 }
 
 module.exports = groupControllers;
