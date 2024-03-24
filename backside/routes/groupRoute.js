@@ -78,5 +78,17 @@ router.route('/:id/posts/:postId')
     groupValidator.groupValidator,
     groupControllers.getPostFromGroup,
   )
+  .put(
+    authController.auth_user,
+    groupValidator.checkAuthForGroup,
+    groupValidator.updatePostGroupValidator,
+    groupControllers.updatePostFromGroup,
+  )
+  .delete(
+    authController.auth_user,
+    groupValidator.checkAuthForGroup,
+    groupValidator.deletePostGroupValidator,
+    groupControllers.deletePostFromGroup,
+  )
 
 module.exports = router

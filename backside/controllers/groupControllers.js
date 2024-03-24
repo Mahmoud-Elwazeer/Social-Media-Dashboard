@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const ApiError = require('../utils/apiError');
 const docUtils = require('../utils/docUtils');
-
+const postUtils = require('../utils/postUtils');
 const Group = require('../models/groupModel');
 const Post = require('../models/postModel');
 
@@ -110,7 +110,7 @@ class groupControllers {
     res.status(200).json({ data: group.posts });
   });
 
-  // @descadd post in the group
+  // @descadd add post in the group
   // @route POST /api/v1/groups/:id/posts
   // @access public
   static addPostToGroup = asyncHandler(async(req, res, next) => {
@@ -123,7 +123,7 @@ class groupControllers {
     res.status(201).json({ data: group.posts });
   });
 
-  // @desc add a user for group.
+  // @desc get post for group.
   // @route GET /api/v1/groups/:id/posts/:postId
   // @access public
   static getPostFromGroup = asyncHandler(async(req, res, next) => {
@@ -136,6 +136,29 @@ class groupControllers {
       return;
     }
     res.status(200).json({ data: post});
+  });
+
+  // @desc edit a post in group.
+  // @route PUT /api/v1/groups/:id/posts/:postId
+  // @access public
+  static updatePostFromGroup = asyncHandler(async(req, res, next) => {
+    const { postId } = req.params;
+    const post = await docUtils.updateDoc(Post, postId, req.body, next);
+    if (!post) return;
+    res.status(200).json({ data: post});
+  });
+
+  // @desc edit a post in group.
+  // @route DELETE /api/v1/groups/:id/posts/:postId
+  // @access public
+  static deletePostFromGroup = asyncHandler(async(req, res, next) => {
+    const { id, postId } = req.params;
+    const query = { $pull: { 'posts': postId } };
+    const group = await docUtils.updateDoc(Group, id, query, next);
+    if (!group) return;
+    const post = await docUtils.deleteDoc(Post, postId, next);
+    if (!post) return;
+    res.status(204).send();
   });
 }
 
