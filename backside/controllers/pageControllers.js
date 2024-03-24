@@ -4,77 +4,75 @@ const docUtils = require('../utils/docUtils');
 const postUtils = require('../utils/postUtils');
 const Group = require('../models/groupModel');
 const Post = require('../models/postModel');
+const Page = require('../models/pageModel');
 
-class groupControllers {
-  // @desc create group
-  // @route POST /api/v1/groups
+class pageControllers {
+  // @desc create page
+  // @route POST /api/v1/pages
   // @access public
-  static createGroup = asyncHandler(async (req, res, next) => {
-    req.body.members = {
-      userId: req.user._id,
-      role: 'admin',
-    }
-    const group = await docUtils.createDoc(Group, req.body, next);
-    if (!group) return;
-    res.status(201).json({ data: group });
+  static createPage = asyncHandler(async (req, res, next) => {
+    req.body.admins = req.user._id
+    const page = await docUtils.createDoc(Page, req.body, next);
+    if (!page) return;
+    res.status(201).json({ data: page });
   });
 
-  // @desc get all groups
-  // @route GET /api/v1/groups
+  // @desc get all pages
+  // @route GET /api/v1/pages
   // @access public
-  static getAllGroups = asyncHandler(async(req, res) => {
-    const groups = await docUtils.getDocs(Group, {}, req);
+  static getAllPages = asyncHandler(async(req, res) => {
+    const pages = await docUtils.getDocs(Page, {}, req);
     res.status(200).json({ 
-      results: groups.docs.length, page: groups.page, data: groups.docs
+      results: pages.docs.length, page: pages.page, data: pages.docs
     });
   });
 
-  // @desc get list for all posts for user
-  // @route GET /api/v1/groups/me
+  // @desc get list for all pages for user
+  // @route GET /api/v1/pages/me
   // @access public
-  static getGroups = asyncHandler(async(req, res) => {
-    const { docs, page } = await docUtils.getDocs(Group, { 'members.userId': req.user._id }, req);
+  static getPages = asyncHandler(async(req, res) => {
+    const { docs, page } = await docUtils.getDocs(Page, { admins: req.user._id }, req);
     res.status(200).json({ results: docs.length, page, data: docs});
   });
 
-  // @desc get specific group
-  // @route GET /api/v1/groups/:id
+  // @desc get specific page
+  // @route GET /api/v1/pages/:id
   // @access public
-  static getGroupById = asyncHandler(async(req, res, next) => {
+  static getPageById = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    const group = await docUtils.getlDocById(Group, id, next);
-    if (!group) return;
-    res.status(200).json({ data: group});
+    const page = await docUtils.getlDocById(Page, id, next);
+    if (!page) return;
+    res.status(200).json({ data: page});
   });
 
-  // @desc update specific Group
-  // @route PUT /api/v1/groups/:id
+  // @desc update specific Page
+  // @route PUT /api/v1/pages/:id
   // @access public
-  static updateGroup = asyncHandler(async(req, res, next) => {
+  static updatePage = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    const group = await docUtils.updateDoc(Group, id, req.body, next);
-    if (!group) return;
-    res.status(200).json({ data: group});
+    const page = await docUtils.updateDoc(Page, id, req.body, next);
+    if (!page) return;
+    res.status(200).json({ data: page});
   });
 
-  // @desc delete specific group
-  // @route DELETE /api/v1/groups/:id
+  // @desc delete specific page
+  // @route DELETE /api/v1/pages/:id
   // @access public
-  static deleteGroup = asyncHandler(async(req, res, next) => {
+  static deletePage = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    const group = await docUtils.deleteDoc(Group, id, next);
-    if (!group) return;
+    const page = await docUtils.deleteDoc(Page, id, next);
+    if (!page) return;
     res.status(204).send();
   });
 
-  // @desc get all members for specific group
-  // @route GET /api/v1/groups/:id/members
+  // @desc get all members for specific admins
+  // @route GET /api/v1/pages/:id/admins
   // @access public
-  static getAllmembers = asyncHandler(async(req, res, next) => {
+  static getAllAdmins = asyncHandler(async(req, res, next) => {
     const { id } = req.params;
-    const group = await docUtils.getlDocById(Group, id, next);
-    if (!group) return;
-    res.status(200).json({ data: group.members });
+    const page = await docUtils.getlDocById(Page, id, next);
+    if (!page) return;
+    res.status(200).json({ data: page.admins });
   });
 
   // @desc add a user for group.
@@ -205,4 +203,4 @@ class groupControllers {
   })
 }
 
-module.exports = groupControllers;
+module.exports = pageControllers;
