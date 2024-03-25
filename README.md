@@ -1,4 +1,4 @@
-## Social Media Dashboard
+## Social Media APIs
 
 ### Tech Stack:
     Node.js / Express.js
