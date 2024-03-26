@@ -54,7 +54,6 @@
 10. **POST /auth/signup**: sign up for user (authentication).
 11. **PUT /changePassword/me**: change password for current user
 12. **PUT /changePassword/:id:** change password for user (private for only admins)
-
 -----------------
 ### **Post Routes:**
 
@@ -104,7 +103,6 @@
 17. **PUT /groups/:id/requests/:userId/accept**: Accept a join request for a group.
 18. **DELETE /groups/:id/requests/:userId/reject**: Reject a join request for a group.
 -----------------------
-
 ### Pages Routes
 
 1. **GET /pages**: Get all pages.
