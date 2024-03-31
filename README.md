@@ -11,6 +11,7 @@
     npm run start-server
 
 ### Milestones:
+
 1. User Authentication and Authorization
     * Implement user login and signup functionality.
     * Ensure that routes are protected and only accessible to authenticated users.
